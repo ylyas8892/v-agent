@@ -1,0 +1,17 @@
+[Unit]
+Description=VPN Provisioning Agent
+After=network.target openvpnas.service
+
+[Service]
+Type=simple
+User=vpnprov
+Group=vpnprov
+WorkingDirectory=/opt/vpn-agent
+Environment="PATH=/opt/vpn-agent/venv/bin:/usr/local/bin:/usr/bin:/bin"
+EnvironmentFile=/opt/vpn-agent/.env
+ExecStart=/opt/vpn-agent/venv/bin/uvicorn app.main:app --host 0.0.0.0 --port 8443 --ssl-keyfile /etc/vpn-agent/key.pem --ssl-certfile /etc/vpn-agent/cert.pem
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
